@@ -22,10 +22,7 @@ jobs:
           java-version: '17'
 
       - name: Build HTML version
-        run: ./gradlew html:build
-
-      - name: List files after build # debug
-        run: ls -R ./html/build
+        run: ./gradlew html:dist
 
       - name: Upload HTML build artifact
         uses: actions/upload-artifact@v4
