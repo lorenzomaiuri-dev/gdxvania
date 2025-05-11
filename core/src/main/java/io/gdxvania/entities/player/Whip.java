@@ -1,0 +1,72 @@
+package io.gdxvania.entities.player;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+
+import io.gdxvania.utils.Constants;
+
+public class Whip extends Weapon {
+    private float attackTimer = 0;
+    float offsetY = 15;
+    private float playerX, playerY, playerWidth;
+
+    public Whip() {
+        texture = new Texture("whip.png");
+    }
+
+    @Override
+    public void startAttack() {    	
+        if (!isAttacking) {
+            isAttacking = true;
+            attackTimer = Constants.ATTACK_DURATION;
+        }
+    }
+
+    @Override
+    public void update(float delta) {
+        if (isAttacking) {
+            attackTimer -= delta;
+            if (attackTimer <= 0) {
+                isAttacking = false;
+            }
+        }
+    }
+
+    @Override
+    public void render(SpriteBatch batch) {
+        if (isAttacking) {
+            float x = Player.getInstance().getIsFacingRight() ? playerX : playerX;
+            float width = Player.getInstance().getIsFacingRight() ? texture.getWidth() : -texture.getWidth();
+
+            batch.draw(texture,
+                       x,
+                       playerY,
+                       width,
+                       texture.getHeight());
+        }
+    }
+
+    public void updateBounds(Vector2 playerPosition, float playerWidth, float playerY, boolean isFacingRight) {
+        this.playerY = playerY + offsetY;
+        if (isFacingRight) {
+            this.playerX = playerPosition.x + playerWidth;
+        } else {
+            this.playerX = playerPosition.x;
+        }
+        this.playerWidth = playerWidth;
+    }
+
+    @Override
+    public Rectangle getBounds(boolean isFacingRight) {
+        float x = isFacingRight ? playerX + playerWidth : playerX - texture.getWidth();
+        return new Rectangle(x, playerY, texture.getWidth(), texture.getHeight());
+    }
+    
+    @Override
+    public void dispose() {
+        texture.dispose();
+    }
+}
+
