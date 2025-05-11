@@ -28,7 +28,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gdxvania-html-build
-          path: ./html/webapp
+          path: ./html/build/dist
 
   deploy:
     needs: build
@@ -48,4 +48,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./html/webapp
+          publish_dir: ./html/build/dist
