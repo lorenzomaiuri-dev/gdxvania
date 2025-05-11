@@ -24,6 +24,9 @@ jobs:
       - name: Build HTML version
         run: ./gradlew html:build
 
+      - name: List files after build # debug
+        run: ls -R ./html/build
+
       - name: Upload HTML build artifact
         uses: actions/upload-artifact@v4
         with:
@@ -48,4 +51,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./html/build/dist
+          publish_dir: ./gdxvania-html-build
