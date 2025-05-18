@@ -16,18 +16,14 @@ public class EnemySpawner {
     private int maxMultipleSpawn = 4;
     private boolean bossSpawned = false;
 
-    public void spawnEnemies(float delta, GameEntities gameEntities) {
+    public void spawnEnemies(float delta) {
     	
     	if (bossSpawned) {
             return;
         }
     	
     	if (GameManager.getInstance().getScore() > Constants.SCORE_SPAWN_BOSS) {
-    		float bossX = Constants.SCREEN_WIDTH / 2 - 50;
-            float bossY = Constants.GROUND_LEVEL;
-            Enemy grimReaper = new GrimReaper(new Vector2(bossX, bossY));            
-            gameEntities.addEnemy(grimReaper);
-            bossSpawned = true;
+    		SpawnBoss();
 			return;
 		}
     	
@@ -71,11 +67,21 @@ public class EnemySpawner {
                 float xVelocity = (goingRight) ? spawnedEnemy.getBaseSpeed() : -spawnedEnemy.getBaseSpeed();
                 spawnedEnemy.setVelocity(new Vector2(xVelocity, spawnedEnemy.getVelocity().y));
                 spawnedEnemy.setFlip(goingRight, false);
-                gameEntities.addEnemy(spawnedEnemy);
+                GameEntities.getInstance().addEnemy(spawnedEnemy);
             }
 
             spawnTimer = 0;
             currentSpawnInterval = MathUtils.random(minSpawnInterval, maxSpawnInterval);
         }
+                
     }
+    
+    public void SpawnBoss() {
+    		float bossX = Constants.SCREEN_WIDTH / 2 - 50;
+            float bossY = Constants.GROUND_LEVEL;
+            Enemy grimReaper = new GrimReaper(new Vector2(bossX, bossY));            
+            GameEntities.getInstance().addEnemy(grimReaper);
+            bossSpawned = true;
+    }
+    
 }

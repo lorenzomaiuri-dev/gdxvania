@@ -3,6 +3,9 @@ package io.gdxvania;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import io.gdxvania.entities.*;
 import io.gdxvania.entities.enemies.Enemy;
@@ -61,7 +64,7 @@ public class GameManager {
 
         gameEntities.updateEntities(delta, player);
 
-        enemySpawner.spawnEnemies(delta, gameEntities);
+        enemySpawner.spawnEnemies(delta);
 
         checkPlayerEnemyCollisions();
     }
@@ -97,8 +100,8 @@ public class GameManager {
     }
 
     private void checkPlayerEnemyCollisions() {
-    	GameEntities gameEntities = GameEntities.getInstance();
-        for (Enemy enemy : gameEntities.getEnemies()) { 
+    	List<Enemy> enemies = GameEntities.getInstance().getEnemies();
+        for (Enemy enemy : enemies) { 
             if (player.collidesWith(enemy)) {
                 player.takeDamage();
                 if (player.isDead()) {
