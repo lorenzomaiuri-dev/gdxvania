@@ -2,6 +2,7 @@ package io.gdxvania;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import io.gdxvania.utils.ESounds;
@@ -10,19 +11,22 @@ public class SoundManager {
 	
 	private static SoundManager instance;
     private ObjectMap<String, Music> musics;
+    private ObjectMap<String, Sound> sounds;    
     private Music currentMusic;
     private float volume = 1.0f;
 
     private SoundManager() {
         musics = new ObjectMap<>();
-        load(ESounds.TitleScreen, "Vampire_Killer.mp3");
-        load(ESounds.TutorialScreen, "Prologue.mp3");
-        load(ESounds.Game, "Vampire_Killer.mp3");
-        load(ESounds.Boss, "Heart_of_Fire.mp3");
-        load(ESounds.VictoryScreen, "All_Clear.mp3");
-        load(ESounds.GameOverScreen, "Game_Over.mp3");
-        load(ESounds.PlayerHit, "damage.mp3");
-        load(ESounds.WhipHit, "whip-hit.mp3");
+        sounds = new ObjectMap<>();
+        
+        loadMusic(ESounds.TitleScreen, "Vampire_Killer.mp3");
+        loadMusic(ESounds.TutorialScreen, "Prologue.mp3");
+        loadMusic(ESounds.Game, "Vampire_Killer.mp3");
+        loadMusic(ESounds.Boss, "Heart_of_Fire.mp3");
+        loadMusic(ESounds.VictoryScreen, "All_Clear.mp3");
+        loadMusic(ESounds.GameOverScreen, "Game_Over.mp3");
+        loadSound(ESounds.PlayerHit, "damage.mp3");
+        loadSound(ESounds.WhipHit, "whip-hit.mp3");
 
     }
     
@@ -32,28 +36,60 @@ public class SoundManager {
         }
         return instance;
     }
-
-    public void load(ESounds key, String filePath) {
-        Music music = Gdx.audio.newMusic(Gdx.files.internal(filePath));
-        musics.put(key.toString(), music);
+    
+    private void loadMusic(ESounds key, String filePath) {
+        load(key, filePath, true);
+    }
+    
+    private void loadSound(ESounds key, String filePath) {
+        load(key, filePath, false);
     }
 
-    public void play(ESounds key, boolean looping) {
+    private void load(ESounds key, String filePath, boolean isMusic) {        
+        if (isMusic) {
+        	Music music = Gdx.audio.newMusic(Gdx.files.internal(filePath));
+        	musics.put(key.toString(), music);
+		} else {
+	        Sound sound = Gdx.audio.newSound(Gdx.files.internal(filePath));
+			sounds.put(key.toString(), sound);
+		}
+        
+    }
+    
+    private void playMusic(ESounds key) {
         Music music = musics.get(key.toString());
         if (music != null) {
             if (currentMusic != null && currentMusic.isPlaying()) {
                 currentMusic.stop();
             }
             currentMusic = music;
-            currentMusic.setLooping(looping);
+            currentMusic.setLooping(true);
             currentMusic.setVolume(volume);
             currentMusic.play();
         } else {
-            Gdx.app.error("MusicManager", "Cannot found music with key: " + key);
+        	Gdx.app.error("SoundManager", "Cannot find music with key: " + key);
+        }
+    }
+    
+    private long playSound(ESounds key) {
+        Sound sound = sounds.get(key.toString());
+        if (sound != null) {
+            return sound.play(volume);
+        } else {
+        	Gdx.app.error("SoundManager", "Cannot find sound with key: " + key);
+            return -1;
         }
     }
 
-    public void stop(ESounds key) {
+    public void play(ESounds key, boolean isMusic) {
+    	if (isMusic) {
+			playMusic(key);
+		} else {
+			playSound(key);
+		}
+    }    
+    
+    private void stopMusic(ESounds key) {
         Music music = musics.get(key.toString());
         if (music != null && music.isPlaying()) {
             music.stop();
@@ -62,12 +98,38 @@ public class SoundManager {
             }
         }
     }
-
-    public void stopAll() {
+    
+    private void stopSound(ESounds key) {
+        Sound sound = sounds.get(key.toString());
+        if (sound != null) {
+            sound.stop();
+        }
+    }
+    
+    public void stop(ESounds key, boolean isMusic) {
+        if (isMusic) {
+			stopMusic(key);
+		} else {
+			stopSound(key);
+		}
+    }
+    
+    private void stopAllMusic() {
         if (currentMusic != null && currentMusic.isPlaying()) {
             currentMusic.stop();
             currentMusic = null;
         }
+    }
+
+    private void stopAllSounds() {
+        for (Sound sound : sounds.values()) {
+            sound.stop();
+        }
+    }
+
+    public void stopAll() {
+    	stopAllSounds();
+        stopAllMusic();        
     }
 
     public void setVolume(float volume) {
@@ -80,17 +142,19 @@ public class SoundManager {
     public float getVolume() {
         return volume;
     }
-
-    public boolean isPlaying(ESounds key) {
-        Music music = musics.get(key.toString());
-        return music != null && music.isPlaying();
-    }
-
+    
     public void dispose() {
         for (Music music : musics.values()) {
             music.dispose();
         }
         musics.clear();
-        currentMusic = null;
+        if (currentMusic != null) {
+            currentMusic.dispose();
+            currentMusic = null;
+        }
+        for (Sound sound : sounds.values()) {
+            sound.dispose();
+        }
+        sounds.clear();
     }
 }
