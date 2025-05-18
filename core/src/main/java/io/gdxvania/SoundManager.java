@@ -14,6 +14,7 @@ public class SoundManager {
     private ObjectMap<String, Sound> sounds;    
     private Music currentMusic;
     private float volume = 1.0f;
+    private boolean audioUnlocked = false;
 
     private SoundManager() {
         musics = new ObjectMap<>();
@@ -35,6 +36,26 @@ public class SoundManager {
             instance = new SoundManager();
         }
         return instance;
+    }
+    
+    public void unlockAudio() {
+        if (!audioUnlocked) {
+            try {
+                Music unlockSound = Gdx.audio.newMusic(Gdx.files.internal("block-breaking.mp3"));
+                unlockSound.setVolume(0);
+                unlockSound.play();
+                unlockSound.setOnCompletionListener(new Music.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(Music music) {
+                        music.dispose();
+                    }
+                });
+                audioUnlocked = true;
+                Gdx.app.log("SoundManager", "Audio context unlocked");
+            } catch (Exception e) {
+                Gdx.app.log("SoundManager", "Error unloacking audio: " + e.getMessage());
+            }
+        }
     }
     
     private void loadMusic(ESounds key, String filePath) {
