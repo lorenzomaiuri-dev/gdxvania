@@ -1,11 +1,13 @@
 package io.gdxvania.entities;
 
 import io.gdxvania.GameManager;
+import io.gdxvania.SoundManager;
 import io.gdxvania.entities.enemies.*;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import io.gdxvania.utils.Constants;
+import io.gdxvania.utils.ESounds;
 
 public class EnemySpawner {
     private float spawnTimer = 0;
@@ -77,6 +79,7 @@ public class EnemySpawner {
     }
     
     public void SpawnBoss() {
+    		SoundManager.getInstance().play(ESounds.Boss, true);
     		float bossX = Constants.SCREEN_WIDTH / 2 - 50;
             float bossY = Constants.GROUND_LEVEL;
             Enemy grimReaper = new GrimReaper(new Vector2(bossX, bossY));            

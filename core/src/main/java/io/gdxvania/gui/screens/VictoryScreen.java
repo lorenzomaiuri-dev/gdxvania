@@ -12,7 +12,9 @@ package io.gdxvania.gui.screens;
  import com.badlogic.gdx.utils.viewport.FitViewport;
  import com.badlogic.gdx.utils.viewport.Viewport;
  import io.gdxvania.Main;
- import io.gdxvania.utils.Constants;
+import io.gdxvania.SoundManager;
+import io.gdxvania.utils.Constants;
+import io.gdxvania.utils.ESounds;
 
  public class VictoryScreen implements Screen {
      private static final float VIRTUAL_WIDTH = Constants.SCREEN_WIDTH;
@@ -47,7 +49,14 @@ package io.gdxvania.gui.screens;
      }
 
      @Override
-     public void show() {}
+     public void show() {
+    	 SoundManager.getInstance().play(ESounds.VictoryScreen, true);
+     }
+     
+     @Override
+     public void hide() {
+    	 SoundManager.getInstance().stop(ESounds.VictoryScreen, true);
+     }
 
      @Override
      public void render(float delta) {
@@ -91,7 +100,6 @@ package io.gdxvania.gui.screens;
 
      @Override public void pause() {}
      @Override public void resume() {}
-     @Override public void hide() {}
 
      @Override
      public void dispose() {

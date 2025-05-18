@@ -11,7 +11,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.gdxvania.Main;
+import io.gdxvania.SoundManager;
 import io.gdxvania.utils.Constants;
+import io.gdxvania.utils.ESounds;
 
 public class GameOverScreen implements Screen {
     private static final float VIRTUAL_WIDTH = Constants.SCREEN_WIDTH;
@@ -39,7 +41,14 @@ public class GameOverScreen implements Screen {
     }
 
     @Override
-    public void show() {}
+    public void show() {
+   	 SoundManager.getInstance().play(ESounds.GameOverScreen, true);
+    }
+    
+    @Override
+    public void hide() {
+   	 SoundManager.getInstance().stop(ESounds.GameOverScreen, true);
+    }
 
     @Override
     public void render(float delta) {
@@ -74,7 +83,6 @@ public class GameOverScreen implements Screen {
 
     @Override public void pause() {}
     @Override public void resume() {}
-    @Override public void hide() {}
 
     @Override
     public void dispose() {

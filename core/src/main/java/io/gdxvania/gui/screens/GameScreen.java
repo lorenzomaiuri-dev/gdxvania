@@ -4,6 +4,8 @@ import com.badlogic.gdx.Screen;
 
 import io.gdxvania.GameManager;
 import io.gdxvania.Main;
+import io.gdxvania.SoundManager;
+import io.gdxvania.utils.ESounds;
 
 public class GameScreen implements Screen {
     private final Main game;
@@ -15,7 +17,14 @@ public class GameScreen implements Screen {
     }
 
     @Override
-    public void show() {}
+    public void show() {
+   	 SoundManager.getInstance().play(ESounds.Game, true);
+    }
+    
+    @Override
+    public void hide() {
+   	 SoundManager.getInstance().stop(ESounds.Game, true);
+    }
 
     @Override
     public void render(float delta) {
@@ -34,7 +43,6 @@ public class GameScreen implements Screen {
     }
     @Override public void pause() {}
     @Override public void resume() {}
-    @Override public void hide() {}
     @Override public void dispose() {
         gameManager.dispose();
     }

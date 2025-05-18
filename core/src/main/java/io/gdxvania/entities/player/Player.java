@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import io.gdxvania.utils.Constants;
+import io.gdxvania.utils.ESounds;
+import io.gdxvania.SoundManager;
 import io.gdxvania.entities.GameEntities;
 import io.gdxvania.entities.enemies.Enemy;
 
@@ -158,6 +160,9 @@ public class Player {
     
     public void takeDamage(int damage) {
         if (damageTimer <= 0) {
+        	
+        	SoundManager.getInstance().play(ESounds.PlayerHit, false);
+        	
             health -= damage;
             damageTimer = Constants.DAMAGE_COOLDOWN;
             blinkTimer = 0; 

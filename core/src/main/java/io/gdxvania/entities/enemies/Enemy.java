@@ -7,7 +7,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import io.gdxvania.GameManager;
+import io.gdxvania.SoundManager;
 import io.gdxvania.entities.player.Powerup;
+import io.gdxvania.utils.ESounds;
 
 import com.badlogic.gdx.math.MathUtils;
 
@@ -135,7 +137,9 @@ public abstract class Enemy {
     	
     	if (damage < 0) {
     		return;
-    	}    	    
+    	}
+    	
+    	SoundManager.getInstance().play(ESounds.WhipHit, false);
     	
     	this.health -= damage;
     	startInvincibility();
