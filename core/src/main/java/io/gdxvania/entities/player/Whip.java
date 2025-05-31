@@ -10,14 +10,14 @@ import io.gdxvania.utils.Constants;
 public class Whip extends Weapon {
     private float attackTimer = 0;
     float offsetY = 15;
-    private float playerX, playerY, playerWidth;
+    private float playerX, playerY;
 
     public Whip() {
         texture = new Texture("whip.png");
     }
 
     @Override
-    public void startAttack() {    	
+    public void startAttack() {
         if (!isAttacking) {
             isAttacking = true;
             attackTimer = Constants.ATTACK_DURATION;
@@ -39,25 +39,25 @@ public class Whip extends Weapon {
     public void render(SpriteBatch batch) {
     	updateBounds();
         if (isAttacking) {
-            float x = Player.getInstance().getIsFacingRight() ? playerX : playerX;
             float width = Player.getInstance().getIsFacingRight() ? texture.getWidth() : -texture.getWidth();
 
             batch.draw(texture,
-                       x,
+                       playerX,
                        playerY,
                        width,
                        texture.getHeight());
         }
-    }    
+    }
 
     @Override
     public Rectangle getBounds() {
-    	updateBounds();    
+    	updateBounds();
     	Player player = Player.getInstance();
-        float x = player.getIsFacingRight() ? playerX + playerWidth : playerX - texture.getWidth();
+        float x = player.getIsFacingRight() ? playerX + texture.getWidth() : playerX - texture.getWidth();
         return new Rectangle(x, playerY, texture.getWidth(), texture.getHeight());
     }
-    
+
+    // get bounds with offset
     private void updateBounds() {
     	Player player = Player.getInstance();
     	Vector2 playerPosition = player.getPosition();
@@ -68,9 +68,8 @@ public class Whip extends Weapon {
         } else {
             this.playerX = playerPosition.x;
         }
-        this.playerWidth = playerWidth;
     }
-    
+
     @Override
     public void dispose() {
         texture.dispose();

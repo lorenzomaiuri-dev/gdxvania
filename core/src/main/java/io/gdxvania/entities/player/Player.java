@@ -26,22 +26,21 @@ public class Player {
     private float blinkTimer = 0;
     private boolean isVisible = true;
     private float damageTimer = 0;
-    private final Whip whip = new Whip();
-    private AttackManager attackManager;
+    private final AttackManager attackManager;
 
-    private final Texture texture = new Texture("player.png");        
-    
+    private final Texture texture = new Texture("player.png");
+
     private Player() {
-        attackManager = new AttackManager(whip);                       
+        attackManager = new AttackManager();
     }
-    
+
     public static Player getInstance() {
         if (instance == null) {
             instance = new Player();
         }
         return instance;
     }
-    
+
     public void reset(){
         instance = null;
     }
@@ -61,7 +60,7 @@ public class Player {
         } else {
             isVisible = true;
         }
-        
+
         checkPlayerEnemyCollisions();
     }
 
@@ -73,20 +72,20 @@ public class Player {
 
 
         if (Gdx.input.isKeyJustPressed(Constants.JUMP_KEY)) {
-        	handleJump();            
+        	handleJump();
         }
 
-        if (Gdx.input.isKeyJustPressed(Constants.WHIP_KEY)) {        	
+        if (Gdx.input.isKeyJustPressed(Constants.WHIP_KEY)) {
             attackManager.startAttack();
         }
-        
+
         handleKnife();
     }
 
 	private void handleJump() {
 		if (!isJumping) {
 			velocityY = Constants.JUMP_FORCE;
-		    isJumping = true;	
+		    isJumping = true;
 		}
 	}
 
@@ -113,7 +112,7 @@ public class Player {
             position.x += Constants.PLAYER_SPEED * delta;
             isFacingRight = true;
         }
-        
+
         // prevent leaving screen
         if (position.x < 0) {
             position.x = 0;
@@ -142,13 +141,13 @@ public class Player {
                        !isFacingRight ? texture.getWidth() : -texture.getWidth(),
                        texture.getHeight());
         }
-        attackManager.render(batch, this);
+        attackManager.render(batch);
     }
 
     public Rectangle getBounds() {
         return new Rectangle(position.x, position.y, texture.getWidth(), texture.getHeight());
     }
-    
+
     public boolean collidesWith(Rectangle bounds) {
         return getBounds().overlaps(bounds) && damageTimer <= 0;
     }
@@ -156,11 +155,11 @@ public class Player {
     public boolean collidesWith(Enemy enemy) {
         return collidesWith(enemy.getBounds());
     }
-    
+
     private void checkPlayerEnemyCollisions() {
     	// Check enemies
     	List<Enemy> enemies = GameEntities.getInstance().getEnemies();
-        for (Enemy enemy : enemies) { 
+        for (Enemy enemy : enemies) {
             if (collidesWith(enemy)) {
                 takeDamage();
                 if (isDead()) {
@@ -169,27 +168,27 @@ public class Player {
             }
         }
     }
- 
+
     public void takeDamage() {
         takeDamage(1);
-        
+
         if (isDead()) {
         	GameManager.getInstance().GameOver();
-		}        
+		}
     }
-    
+
     public void takeDamage(int damage) {
         if (damageTimer <= 0) {
-        	
+
         	SoundManager.getInstance().play(ESounds.PlayerHit, false);
-        	
+
             health -= damage;
             damageTimer = Constants.DAMAGE_COOLDOWN;
-            blinkTimer = 0; 
+            blinkTimer = 0;
             isVisible = false;
         }
     }
-        
+
     private boolean isDead() {
         return health <= 0;
     }
@@ -204,7 +203,6 @@ public class Player {
 
     public void dispose() {
         texture.dispose();
-        whip.dispose();
     }
 
     public Vector2 getPosition() {
@@ -218,15 +216,15 @@ public class Player {
     public float getHeight() {
         return texture.getHeight();
     }
-    
+
     public int getCurrentHealth() {
         return this.health;
     }
-    
+
     public int getCurrentKnives() {
         return this.knifeCount;
     }
-    
+
     public boolean getIsFacingRight() {
         return this.isFacingRight;
     }

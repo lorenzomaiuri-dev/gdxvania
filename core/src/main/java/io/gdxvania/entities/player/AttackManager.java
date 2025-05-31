@@ -10,27 +10,27 @@ import java.util.Iterator;
 import java.util.List;
 
 public class AttackManager {
-    private Whip whip;
+    private final Whip whip;
 
-    public AttackManager(Whip whip) {
-        this.whip = whip;
+    public AttackManager() {
+        this.whip = new Whip();
     }
 
     public void update(float delta) {
-        whip.update(delta);        
+        whip.update(delta);
         checkCollisionWithEnemies();
     }
 
     public void startAttack() {
         whip.startAttack();
     }
-    
+
     public void checkCollisionWithEnemies() {
-    	
+
         if (!whip.isAttacking() || whip.getBounds().getWidth() == 0) return;
-        
+
         Rectangle whipHitbox = whip.getBounds();
-        
+
         List<Enemy> enemies = GameEntities.getInstance().getEnemies();
         Iterator<Enemy> iter = enemies.iterator();
         while (iter.hasNext()) {
@@ -44,10 +44,10 @@ public class AttackManager {
         }
     }
 
-    public void render(SpriteBatch batch, Player player) {
+    public void render(SpriteBatch batch) {
         whip.render(batch);
     }
-    
+
     public void dispose() {
         whip.dispose();
     }
