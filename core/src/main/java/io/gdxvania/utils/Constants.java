@@ -3,10 +3,10 @@ package io.gdxvania.utils;
 import com.badlogic.gdx.Input;
 
 public class Constants {
-    public static final float PLAYER_SPEED = 150f;
+    public static final float PLAYER_SPEED = 170f;
     public static final int PLAYER_HEALTH = 5;
     public static final float BLINK_INTERVAL = 0.5f;
-    public static final float GRAVITY = -500f;
+    public static final float GRAVITY = -600f;
     public static final float JUMP_FORCE = 250f;
     
     public static final float ATTACK_DURATION = 0.25f;
@@ -15,7 +15,7 @@ public class Constants {
     public static final float ENEMY_SPEED = 100f;
     public static final float KNIFE_SPEED_MULTIPLIER = 300f;
     public static final float ENEMY_SPAWN_RIGHT_RATE = 0.66f;
-    public static final int SCORE_SPAWN_BOSS = 1000;
+    public static final int SCORE_SPAWN_BOSS = 300;
 
     public static final float GROUND_LEVEL = 7f;
     public static final int SCREEN_WIDTH = 480;
