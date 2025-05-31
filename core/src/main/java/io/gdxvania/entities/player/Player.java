@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import io.gdxvania.utils.Constants;
 import io.gdxvania.utils.ESounds;
+import io.gdxvania.GameManager;
 import io.gdxvania.SoundManager;
 import io.gdxvania.entities.GameEntities;
 import io.gdxvania.entities.enemies.Enemy;
@@ -31,7 +32,7 @@ public class Player {
     private final Texture texture = new Texture("player.png");        
     
     private Player() {
-        attackManager = new AttackManager(this, whip);                       
+        attackManager = new AttackManager(whip);                       
     }
     
     public static Player getInstance() {
@@ -45,10 +46,9 @@ public class Player {
         instance = null;
     }
 
-    public void update(float delta, List<Knife> knives) {
-        handleInput(delta, knives);
-        GameEntities gameEntities = GameEntities.getInstance();
-        attackManager.update(delta, this, gameEntities.getEnemies());
+    public void update(float delta) {
+        handleInput(delta);
+        attackManager.update(delta);
         applyPhysics(delta);
 
         if (damageTimer > 0) {
@@ -61,9 +61,11 @@ public class Player {
         } else {
             isVisible = true;
         }
+        
+        checkPlayerEnemyCollisions();
     }
 
-    private void handleInput(float delta, List<Knife> knives) {
+    private void handleInput(float delta) {
     	boolean movingLeft = Gdx.input.isKeyPressed(Constants.LEFT_DIRECTION_KEY);
         boolean movingRight = Gdx.input.isKeyPressed(Constants.RIGHT_DIRECTION_KEY);
 
@@ -78,7 +80,7 @@ public class Player {
             attackManager.startAttack();
         }
         
-        handleKnife(knives);
+        handleKnife();
     }
 
 	private void handleJump() {
@@ -88,7 +90,8 @@ public class Player {
 		}
 	}
 
-	private void handleKnife(List<Knife> knives) {
+	private void handleKnife() {
+		List<Knife> knives = GameEntities.getInstance().getKnives();
 		boolean isKnifeKeyDown = Gdx.input.isKeyPressed(Constants.KNIFE_KEY);
         if (isKnifeKeyDown && !knifeKeyPressed && knifeCount > 0) {
             float knifeOffsetX = isFacingRight ? texture.getWidth() : 0;
@@ -153,9 +156,26 @@ public class Player {
     public boolean collidesWith(Enemy enemy) {
         return collidesWith(enemy.getBounds());
     }
+    
+    private void checkPlayerEnemyCollisions() {
+    	// Check enemies
+    	List<Enemy> enemies = GameEntities.getInstance().getEnemies();
+        for (Enemy enemy : enemies) { 
+            if (collidesWith(enemy)) {
+                takeDamage();
+                if (isDead()) {
+                    GameManager.getInstance().GameOver();
+                }
+            }
+        }
+    }
  
     public void takeDamage() {
         takeDamage(1);
+        
+        if (isDead()) {
+        	GameManager.getInstance().GameOver();
+		}        
     }
     
     public void takeDamage(int damage) {
@@ -169,8 +189,8 @@ public class Player {
             isVisible = false;
         }
     }
-
-    public boolean isDead() {
+        
+    private boolean isDead() {
         return health <= 0;
     }
 

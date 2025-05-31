@@ -16,7 +16,8 @@ public class GuiRenderer {
         font.getData().setScale(2);
     }
 
-    public void render(SpriteBatch batch, Player player, int score) {
+    public void render(SpriteBatch batch, int score) {
+    	Player player = Player.getInstance();
         drawHealthBar(batch, player.getCurrentHealth());
         drawKnivesCount(batch, player.getCurrentKnives());
         drawCurrentScore(batch, score);

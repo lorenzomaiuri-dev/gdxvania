@@ -26,6 +26,7 @@ public class Whip extends Weapon {
 
     @Override
     public void update(float delta) {
+    	updateBounds();
         if (isAttacking) {
             attackTimer -= delta;
             if (attackTimer <= 0) {
@@ -36,6 +37,7 @@ public class Whip extends Weapon {
 
     @Override
     public void render(SpriteBatch batch) {
+    	updateBounds();
         if (isAttacking) {
             float x = Player.getInstance().getIsFacingRight() ? playerX : playerX;
             float width = Player.getInstance().getIsFacingRight() ? texture.getWidth() : -texture.getWidth();
@@ -46,22 +48,27 @@ public class Whip extends Weapon {
                        width,
                        texture.getHeight());
         }
-    }
+    }    
 
-    public void updateBounds(Vector2 playerPosition, float playerWidth, float playerY, boolean isFacingRight) {
-        this.playerY = playerY + offsetY;
-        if (isFacingRight) {
+    @Override
+    public Rectangle getBounds() {
+    	updateBounds();    
+    	Player player = Player.getInstance();
+        float x = player.getIsFacingRight() ? playerX + playerWidth : playerX - texture.getWidth();
+        return new Rectangle(x, playerY, texture.getWidth(), texture.getHeight());
+    }
+    
+    private void updateBounds() {
+    	Player player = Player.getInstance();
+    	Vector2 playerPosition = player.getPosition();
+    	float playerWidth = player.getWidth();
+        this.playerY = playerPosition.y + offsetY;
+        if (player.getIsFacingRight()) {
             this.playerX = playerPosition.x + playerWidth;
         } else {
             this.playerX = playerPosition.x;
         }
         this.playerWidth = playerWidth;
-    }
-
-    @Override
-    public Rectangle getBounds(boolean isFacingRight) {
-        float x = isFacingRight ? playerX + playerWidth : playerX - texture.getWidth();
-        return new Rectangle(x, playerY, texture.getWidth(), texture.getHeight());
     }
     
     @Override

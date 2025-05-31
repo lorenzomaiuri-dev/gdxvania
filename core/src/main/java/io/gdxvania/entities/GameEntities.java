@@ -1,7 +1,6 @@
 package io.gdxvania.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import io.gdxvania.GameManager;
 import io.gdxvania.entities.enemies.Enemy;
 import io.gdxvania.entities.player.Knife;
 import io.gdxvania.entities.player.Player;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-// TODO: SPOSTARE DA GAME MANAGER QUI ED EVENUTALI ALTRE CLASSI
 public class GameEntities {
 	private static GameEntities instance;
     private List<Enemy> enemies = new ArrayList<>();
@@ -32,10 +30,16 @@ public class GameEntities {
     
     public void reset(){
         instance = null;
+        Player.getInstance().reset();
     }
 
-    public void updateEntities(float delta, Player player) {
-        // Aggiornamento di nemici
+    public void updateEntities(float delta) {
+    	    	    	
+    	// Player
+    	Player player = Player.getInstance();
+        player.update(delta);
+    	
+        // Enemies
         for (Iterator<Enemy> iter = enemies.iterator(); iter.hasNext(); ) {
             Enemy enemy = iter.next();
             enemy.update(delta);
@@ -45,15 +49,15 @@ public class GameEntities {
             }
         }
 
-        // Aggiornamento delle Knife
+        // Update knives
         for (Iterator<Knife> iter = knives.iterator(); iter.hasNext(); ) {
             Knife knife = iter.next();
             knife.update(delta);
 
-            // Controllo collisioni tra knife e nemici
+            // Check Enemy knives collision
             for (Iterator<Enemy> enemyIter = enemies.iterator(); enemyIter.hasNext(); ) {
                 Enemy enemy = enemyIter.next();
-                if (knife.getBounds(true).overlaps(enemy.getBounds())) {
+                if (knife.getBounds().overlaps(enemy.getBounds())) {
                     enemy.takeDamage();
                     if (enemy.isDead()) {
                     	enemyIter.remove();
@@ -81,22 +85,21 @@ public class GameEntities {
             if (projectile.isOffScreen()) {
                 iter.remove();
             }
-
-            // Controllo collisioni tra proiettili nemici e il giocatore
+            
+            
+            // Here instead of inside the player because it's already in the loop
             if (player.collidesWith(projectile.getBounds())) {
-                player.takeDamage(projectile.getDamage());
-                iter.remove();
-                if (player.isDead()) {
-                	GameManager.getInstance().GameOver();
-                }
+            	iter.remove();
+                player.takeDamage(projectile.getDamage());                
             }
         }
 
-        // Aggiorna il giocatore (passando la lista dei coltelli)
-        player.update(delta, knives);
     }
 
     public void renderEntities(SpriteBatch batch) {
+    	
+    	Player.getInstance().render(batch);
+    	
         for (Enemy enemy : enemies) {
             enemy.render(batch);
         }
@@ -138,4 +141,8 @@ public class GameEntities {
     public List<Powerup> getPowerups() {
         return powerups;
     }
+    
+    public void dispose() {
+    	Player.getInstance().dispose();
+	}
 }

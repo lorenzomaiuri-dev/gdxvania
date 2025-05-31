@@ -9,11 +9,13 @@ import io.gdxvania.utils.Constants;
 
 public class Knife extends Weapon {
     private float x, y;
-    private boolean isFacingRight = Player.getInstance().getIsFacingRight();
+    private boolean isFacingRight;
 
     public Knife(float x, float y) {
         this.x = x;
         this.y = y;
+        // save initial direction
+        this.isFacingRight = Player.getInstance().getIsFacingRight();
         texture = new Texture("knife.png");
     }
 
@@ -39,7 +41,7 @@ public class Knife extends Weapon {
     }
 
     @Override
-    public Rectangle getBounds(boolean isFacingRight) {
+    public Rectangle getBounds() {
     	return new Rectangle(x, y, texture.getWidth(), texture.getHeight());
     }
     

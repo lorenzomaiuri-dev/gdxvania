@@ -14,7 +14,7 @@ public abstract class Weapon {
 
     public abstract void render(SpriteBatch batch);
 
-    public abstract Rectangle getBounds(boolean isFacingRight);
+    public abstract Rectangle getBounds();
 
     public boolean isAttacking() {
         return isAttacking;

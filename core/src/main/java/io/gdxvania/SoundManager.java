@@ -51,7 +51,7 @@ public class SoundManager {
                     }
                 });
                 audioUnlocked = true;
-                Gdx.app.log("SoundManager", "Audio context unlocked");
+                //Gdx.app.log("SoundManager", "Audio context unlocked");
             } catch (Exception e) {
                 Gdx.app.log("SoundManager", "Error unloacking audio: " + e.getMessage());
             }
